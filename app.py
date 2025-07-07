@@ -55,8 +55,14 @@ if uploaded_file is not None:
     ax4.set_title("Hasil Klasterisasi")
     st.pyplot(fig3)
 
+klasifikasi_cols = [col for col in df.columns if 'klasifikasi' in col.lower()]
+
+if len(klasifikasi_cols) > 0:
     try:
-        acc = accuracy_score(df['Klasifikasi Kemiskinan'], df['Klaster K-Means'])
-        st.success(f"Akurasi K-Means: {acc:.2f}")
+        df[klasifikasi_cols[0]] = df[klasifikasi_cols[0]].astype(int)
+        df.rename(columns={klasifikasi_cols[0]: 'Klasifikasi Kemiskinan'}, inplace=True)
     except:
-        st.warning("Tidak bisa menghitung akurasi karena label tidak tersedia atau tidak cocok")
+        st.warning(f"Kolom ditemukan: {klasifikasi_cols[0]}, tapi tidak bisa dikonversi ke integer.")
+else:
+    st.warning("Kolom klasifikasi tidak tersedia atau tidak dikenali. Kolom yang tersedia:")
+    st.write(df.columns.tolist())
